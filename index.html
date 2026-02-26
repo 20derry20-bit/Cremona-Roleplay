@@ -4,1064 +4,561 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cremona Roleplay</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Raleway:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg-deep: #080c10;
-    --bg-mid: #0d1520;
-    --bg-card: #111d2e;
-    --accent-gold: #f0a500;
-    --accent-red: #c0392b;
-    --accent-blue: #1a6fa8;
-    --accent-cyan: #00d4ff;
-    --text-primary: #e8edf2;
-    --text-muted: #7a8fa6;
-    --border: #1e3048;
-    --glow: rgba(0, 212, 255, 0.15);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg-deep);
-    color: var(--text-primary);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 16px;
-    overflow-x: hidden;
-  }
-
-  /* SCANLINE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.05) 2px,
-      rgba(0,0,0,0.05) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    height: 64px;
-    background: rgba(8, 12, 16, 0.95);
-    border-bottom: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-  }
-
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 3px;
-    color: var(--accent-gold);
-    text-shadow: 0 0 20px rgba(240, 165, 0, 0.5);
-  }
-
-  .nav-logo span {
-    color: var(--accent-cyan);
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 32px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--accent-cyan); }
-
-  .nav-badge {
-    background: var(--accent-red);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    padding: 4px 12px;
-    border-radius: 2px;
-    text-transform: uppercase;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.4); }
-    50% { box-shadow: 0 0 0 8px rgba(192, 57, 43, 0); }
-  }
-
-  /* HERO */
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    overflow: hidden;
-    padding-top: 64px;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(26, 111, 168, 0.2) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 30% at 80% 70%, rgba(192, 57, 43, 0.15) 0%, transparent 50%),
-      linear-gradient(180deg, #080c10 0%, #0a1525 50%, #080c10 100%);
-  }
-
-  /* GRID LINES */
-  .hero-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    animation: gridShift 20s linear infinite;
-  }
-
-  @keyframes gridShift {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(60px); }
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero-badge {
-    display: inline-block;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 12px;
-    color: var(--accent-cyan);
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    padding: 6px 20px;
-    letter-spacing: 3px;
-    margin-bottom: 28px;
-    background: rgba(0, 212, 255, 0.05);
-  }
-
-  .hero-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(72px, 12vw, 160px);
-    line-height: 0.9;
-    letter-spacing: 4px;
-    margin-bottom: 8px;
-    color: #fff;
-  }
-
-  .hero-title .line-gold {
-    display: block;
-    color: var(--accent-gold);
-    text-shadow: 0 0 60px rgba(240, 165, 0, 0.4);
-  }
-
-  .hero-title .line-white {
-    display: block;
-    -webkit-text-stroke: 1px rgba(255,255,255,0.3);
-    color: transparent;
-    font-size: 70%;
-    letter-spacing: 16px;
-  }
-
-  .hero-sub {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 14px;
-    color: var(--text-muted);
-    letter-spacing: 4px;
-    margin-bottom: 48px;
-    margin-top: 20px;
-  }
-
-  .hero-buttons {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 32px;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s;
-  }
-
-  .btn:hover::before { transform: scaleX(1); }
-  .btn span { position: relative; z-index: 1; }
-
-  .btn-primary {
-    background: var(--accent-gold);
-    color: #000;
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-  }
-
-  .btn-primary::before { background: rgba(255,255,255,0.15); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(240,165,0,0.3); }
-
-  .btn-discord {
-    background: #5865f2;
-    color: #fff;
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-  }
-
-  .btn-discord::before { background: rgba(255,255,255,0.1); }
-  .btn-discord:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(88,101,242,0.4); }
-
-  .btn-outline {
-    background: transparent;
-    color: var(--accent-cyan);
-    border: 1px solid var(--accent-cyan);
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-  }
-
-  .btn-outline::before { background: rgba(0, 212, 255, 0.08); }
-  .btn-outline:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,255,0.15); }
-
-  .hero-stats {
-    position: absolute;
-    bottom: 48px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 60px;
-    z-index: 2;
-  }
-
-  .stat {
-    text-align: center;
-  }
-
-  .stat-number {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 40px;
-    color: var(--accent-gold);
-    display: block;
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  .stat-divider {
-    width: 1px;
-    background: var(--border);
-  }
-
-  /* SCROLL INDICATOR */
-  .scroll-indicator {
-    position: absolute;
-    bottom: 20px;
-    right: 40px;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .scroll-indicator span {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--text-muted);
-    writing-mode: vertical-rl;
-  }
-
-  .scroll-line {
-    width: 1px;
-    height: 60px;
-    background: linear-gradient(to bottom, var(--accent-cyan), transparent);
-    animation: scrollAnim 1.5s ease-in-out infinite;
-  }
-
-  @keyframes scrollAnim {
-    0%, 100% { opacity: 0.3; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(1.2); }
-  }
-
-  /* SECTION */
-  section {
-    padding: 100px 0;
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 40px;
-  }
-
-  .section-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--accent-cyan);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(48px, 6vw, 80px);
-    letter-spacing: 3px;
-    line-height: 1;
-    color: #fff;
-    margin-bottom: 20px;
-  }
-
-  .section-title span { color: var(--accent-gold); }
-
-  .section-line {
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(to right, var(--accent-gold), transparent);
-    margin-bottom: 48px;
-  }
-
-  /* CHI SIAMO */
-  .about {
-    background: var(--bg-mid);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .about::before {
-    content: 'CR';
-    position: absolute;
-    right: -40px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 300px;
-    color: rgba(255,255,255,0.02);
-    line-height: 1;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-
-  .about-text p {
-    color: var(--text-muted);
-    line-height: 1.8;
-    font-size: 17px;
-    margin-bottom: 20px;
-  }
-
-  .about-text p strong {
-    color: var(--accent-gold);
-    font-weight: 700;
-  }
-
-  .about-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .info-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    padding: 24px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s;
-  }
-
-  .info-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(to right, var(--accent-gold), transparent);
-  }
-
-  .info-card:hover { border-color: rgba(240, 165, 0, 0.3); }
-
-  .info-card-icon {
-    font-size: 28px;
-    margin-bottom: 12px;
-    display: block;
-  }
-
-  .info-card h4 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 1px;
-    color: var(--accent-gold);
-    margin-bottom: 6px;
-  }
-
-  .info-card p {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-
-  /* STAFF */
-  .staff {
-    background: var(--bg-deep);
-    position: relative;
-  }
-
-  .staff::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--accent-cyan), transparent);
-    opacity: 0.3;
-  }
-
-  .staff-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
-  }
-
-  .staff-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
-  }
-
-  .staff-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--card-accent, var(--accent-cyan));
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-  }
-
-  .staff-card-header {
-    padding: 24px 24px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 100%);
-  }
-
-  .staff-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    flex-shrink: 0;
-    background: var(--card-bg, rgba(0, 212, 255, 0.1));
-    border: 1px solid var(--card-accent, rgba(0, 212, 255, 0.3));
-  }
-
-  .staff-card-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 1px;
-    color: var(--card-accent, var(--accent-cyan));
-    line-height: 1.1;
-  }
-
-  .staff-card-subtitle {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 2px;
-    margin-top: 2px;
-  }
-
-  .staff-card-body {
-    padding: 20px 24px 24px;
-  }
-
-  .staff-card-body p {
-    font-size: 14px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    margin-bottom: 16px;
-  }
-
-  .staff-perks {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .staff-perks li {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--card-accent, var(--accent-cyan));
-    border: 1px solid var(--card-accent, rgba(0, 212, 255, 0.3));
-    padding: 3px 10px;
-    letter-spacing: 1px;
-    background: rgba(0,0,0,0.2);
-  }
-
-  .staff-rank {
-    position: absolute;
-    top: 16px;
-    right: 20px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--card-accent, var(--accent-cyan));
-    opacity: 0.5;
-    letter-spacing: 1px;
-  }
-
-  /* DIVISORE */
-  .divider-section {
-    background: var(--accent-red);
-    padding: 40px 0;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .divider-ticker {
-    display: flex;
-    gap: 60px;
-    animation: ticker 20s linear infinite;
-    white-space: nowrap;
-  }
-
-  .divider-ticker span {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 4px;
-    color: rgba(255,255,255,0.4);
-    flex-shrink: 0;
-  }
-
-  .divider-ticker span.accent {
-    color: rgba(255,255,255,0.9);
-  }
-
-  @keyframes ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  /* CTA SECTION */
-  .cta-section {
-    background: var(--bg-mid);
-    padding: 100px 0;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-section::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,212,255,0.06) 0%, transparent 70%);
-  }
-
-  .cta-content {
-    position: relative;
-    z-index: 1;
-  }
-
-  .cta-content h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(48px, 8vw, 100px);
-    letter-spacing: 4px;
-    line-height: 1;
-    margin-bottom: 16px;
-  }
-
-  .cta-content p {
-    color: var(--text-muted);
-    font-size: 18px;
-    margin-bottom: 48px;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .cta-buttons {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  /* FOOTER */
-  footer {
-    background: #050810;
-    border-top: 1px solid var(--border);
-    padding: 48px 0 24px;
-  }
-
-  .footer-inner {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 40px;
-    flex-wrap: wrap;
-    margin-bottom: 40px;
-  }
-
-  .footer-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    letter-spacing: 3px;
-    color: var(--accent-gold);
-  }
-
-  .footer-logo span { color: var(--accent-cyan); }
-
-  .footer-tagline {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 2px;
-    margin-top: 6px;
-  }
-
-  .footer-links h5 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 2px;
-    color: var(--accent-gold);
-    margin-bottom: 16px;
-  }
-
-  .footer-links a {
-    display: block;
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 14px;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-    transition: color 0.2s;
-  }
-
-  .footer-links a:hover { color: var(--accent-cyan); }
-
-  .footer-bottom {
-    border-top: 1px solid var(--border);
-    padding-top: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .footer-bottom p {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-  }
-
-  .footer-bottom .status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: #27ae60;
-    letter-spacing: 1px;
-  }
-
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #27ae60;
-    animation: blink 1.5s ease-in-out infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  /* ANIMATIONS */
-  .fade-in {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* MOBILE */
-  @media (max-width: 768px) {
-    nav { padding: 0 20px; }
-    .nav-links { display: none; }
-    .hero-stats { gap: 24px; }
-    .about-grid { grid-template-columns: 1fr; gap: 40px; }
-    .about-cards { grid-template-columns: 1fr; }
-    .staff-grid { grid-template-columns: 1fr; }
-    .container { padding: 0 20px; }
-    .hero-buttons { flex-direction: column; align-items: center; }
-    .footer-inner { flex-direction: column; }
-  }
+:root {
+  --blue-deep:    #020b18;
+  --blue-dark:    #04152b;
+  --blue-mid:     #062040;
+  --blue-navy:    #0a3060;
+  --blue-primary: #1565c0;
+  --blue-bright:  #2196f3;
+  --blue-light:   #64b5f6;
+  --blue-glow:    #90caf9;
+  --white-pure:   #ffffff;
+  --white-soft:   #e8f4fd;
+  --white-muted:  #b0cde8;
+  --green-accent: #00e676;
+  --green-soft:   #69f0ae;
+  --text-body:    #c5dff5;
+  --border-glow:  rgba(100,181,246,0.22);
+  --glass-bg:     rgba(6,32,64,0.55);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--blue-deep);
+  color: var(--text-body);
+  font-family: 'Raleway', sans-serif;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--blue-deep); }
+::-webkit-scrollbar-thumb { background: var(--blue-primary); border-radius: 3px; }
+
+#particles { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 52px; height:68px;
+  background: rgba(2,11,24,0.88);
+  border-bottom: 1px solid var(--border-glow);
+  backdrop-filter: blur(24px);
+}
+.nav-logo {
+  font-family:'Cinzel',serif; font-size:21px; font-weight:700;
+  letter-spacing:5px; color:var(--white-pure);
+  text-shadow:0 0 28px rgba(100,181,246,0.55);
+}
+.nav-logo em { font-style:normal; color:var(--blue-light); }
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a {
+  font-size:11px; font-weight:600; letter-spacing:3px;
+  text-transform:uppercase; color:var(--white-muted);
+  text-decoration:none; transition:color 0.3s; position:relative;
+}
+.nav-links a::after {
+  content:''; position:absolute; bottom:-5px; left:0; right:0;
+  height:1px; background:var(--blue-light);
+  transform:scaleX(0); transition:transform 0.3s;
+}
+.nav-links a:hover { color:var(--white-pure); }
+.nav-links a:hover::after { transform:scaleX(1); }
+.nav-live {
+  display:flex; align-items:center; gap:8px;
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  letter-spacing:2px; color:var(--green-accent);
+  border:1px solid rgba(0,230,118,0.28); padding:5px 16px;
+  border-radius:20px; background:rgba(0,230,118,0.04);
+}
+.live-dot {
+  width:7px; height:7px; border-radius:50%;
+  background:var(--green-accent); box-shadow:0 0 8px var(--green-accent);
+  animation:livePulse 1.6s ease-in-out infinite;
+}
+@keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.75)} }
+
+/* HERO */
+.hero {
+  position:relative; min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; padding:68px 40px 0; overflow:hidden; z-index:1;
+}
+.hero-orb {
+  position:absolute; border-radius:50%; pointer-events:none;
+}
+.hero-orb-1 {
+  width:800px; height:800px;
+  background:radial-gradient(circle,rgba(21,101,192,0.16) 0%,transparent 70%);
+  top:-200px; left:-250px;
+  animation:orbDrift 9s ease-in-out infinite;
+}
+.hero-orb-2 {
+  width:600px; height:600px;
+  background:radial-gradient(circle,rgba(0,230,118,0.06) 0%,transparent 70%);
+  bottom:-100px; right:-150px;
+  animation:orbDrift 11s ease-in-out infinite reverse;
+}
+.hero-orb-3 {
+  width:300px; height:300px;
+  background:radial-gradient(circle,rgba(100,181,246,0.08) 0%,transparent 70%);
+  top:30%; left:60%;
+  animation:orbDrift 7s ease-in-out infinite 2s;
+}
+@keyframes orbDrift {
+  0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-28px) scale(1.04)}
+}
+.hero-eyebrow {
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  letter-spacing:5px; color:var(--blue-light); text-transform:uppercase;
+  margin-bottom:28px; opacity:0;
+  animation:fadeUp 0.9s ease 0.15s forwards;
+}
+.hero-title {
+  font-family:'Cinzel',serif;
+  font-size:clamp(68px,11.5vw,155px);
+  font-weight:900; line-height:0.92; letter-spacing:6px;
+  margin-bottom:20px; opacity:0;
+  animation:fadeUp 0.9s ease 0.35s forwards;
+}
+.hero-title .t1 {
+  display:block; color:var(--white-pure);
+  text-shadow:0 0 50px rgba(100,181,246,0.35),0 0 100px rgba(100,181,246,0.15);
+}
+.hero-title .t2 {
+  display:block; font-size:42%; letter-spacing:20px;
+  color:transparent; -webkit-text-stroke:1px rgba(100,181,246,0.4);
+  margin-top:10px;
+}
+.hero-sub {
+  font-size:15px; font-weight:300; letter-spacing:7px;
+  color:var(--white-muted); margin-bottom:52px; text-transform:uppercase;
+  opacity:0; animation:fadeUp 0.9s ease 0.55s forwards;
+}
+.hero-sub span { color:var(--blue-light); font-weight:600; }
+.hero-btns {
+  display:flex; gap:18px; justify-content:center; flex-wrap:wrap;
+  opacity:0; animation:fadeUp 0.9s ease 0.75s forwards;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+/* BUTTONS */
+.btn {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:15px 36px;
+  font-family:'Raleway',sans-serif; font-size:12px;
+  font-weight:700; letter-spacing:2.5px; text-transform:uppercase;
+  text-decoration:none; border:none; cursor:pointer; border-radius:6px;
+  transition:all 0.3s cubic-bezier(0.4,0,0.2,1); position:relative; overflow:hidden;
+}
+.btn-glow {
+  background:var(--blue-primary); color:var(--white-pure);
+  box-shadow:0 4px 22px rgba(21,101,192,0.38);
+}
+.btn-glow:hover { transform:translateY(-3px); box-shadow:0 10px 36px rgba(21,101,192,0.6),0 0 0 1px rgba(100,181,246,0.35); }
+.btn-discord { background:#5865f2; color:#fff; box-shadow:0 4px 22px rgba(88,101,242,0.3); }
+.btn-discord:hover { transform:translateY(-3px); box-shadow:0 10px 36px rgba(88,101,242,0.55); }
+.btn-outline {
+  background:transparent; color:var(--blue-light);
+  border:1px solid var(--border-glow); backdrop-filter:blur(10px);
+}
+.btn-outline:hover { background:rgba(21,101,192,0.18); color:var(--white-pure); transform:translateY(-3px); }
+
+.hero-stats {
+  display:flex; margin-top:72px;
+  border:1px solid var(--border-glow); border-radius:10px; overflow:hidden;
+  backdrop-filter:blur(20px); background:var(--glass-bg);
+  opacity:0; animation:fadeUp 0.9s ease 0.95s forwards;
+}
+.hstat {
+  padding:26px 52px; text-align:center;
+  border-right:1px solid var(--border-glow);
+}
+.hstat:last-child { border-right:none; }
+.hstat-n {
+  font-family:'Cinzel',serif; font-size:34px; font-weight:700;
+  color:var(--white-pure); display:block;
+  text-shadow:0 0 18px rgba(100,181,246,0.45);
+}
+.hstat-l {
+  font-family:'JetBrains Mono',monospace; font-size:9px;
+  letter-spacing:2px; color:var(--white-muted); margin-top:5px; text-transform:uppercase;
+}
+.hero-scroll {
+  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:10px; z-index:2;
+}
+.hero-scroll span { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--white-muted); }
+.scroll-arr {
+  width:18px; height:18px;
+  border-right:2px solid var(--blue-light); border-bottom:2px solid var(--blue-light);
+  transform:rotate(45deg); animation:arrBounce 1.6s ease-in-out infinite;
+}
+@keyframes arrBounce { 0%,100%{opacity:0.3;transform:rotate(45deg) translateY(0)} 50%{opacity:1;transform:rotate(45deg) translateY(4px)} }
+
+/* SECTIONS */
+section { position:relative; z-index:1; }
+.container { max-width:1200px; margin:0 auto; padding:0 52px; }
+.sec-label {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  letter-spacing:5px; color:var(--green-accent); text-transform:uppercase; margin-bottom:14px;
+}
+.sec-title {
+  font-family:'Cinzel',serif;
+  font-size:clamp(38px,5vw,68px); font-weight:700;
+  color:var(--white-pure); line-height:1.05; letter-spacing:2px; margin-bottom:14px;
+}
+.sec-title em { font-style:normal; color:var(--blue-light); }
+.sec-div { width:60px; height:2px; background:linear-gradient(to right,var(--blue-bright),transparent); margin-bottom:52px; }
+
+/* ABOUT */
+.about { padding:120px 0; background:linear-gradient(180deg,var(--blue-deep),var(--blue-dark) 50%,var(--blue-deep)); }
+.about-wrap { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.about-text p { color:var(--text-body); font-size:17px; line-height:1.88; margin-bottom:20px; }
+.about-text strong { color:var(--blue-glow); font-weight:600; }
+.acards { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.acard {
+  background:var(--glass-bg); border:1px solid var(--border-glow);
+  border-radius:14px; padding:26px 22px;
+  backdrop-filter:blur(14px); transition:all 0.35s; position:relative; overflow:hidden;
+}
+.acard::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(to right,transparent,var(--blue-light),transparent);
+  opacity:0; transition:opacity 0.3s;
+}
+.acard:hover { border-color:rgba(100,181,246,0.45); transform:translateY(-5px); box-shadow:0 18px 44px rgba(0,0,0,0.45); }
+.acard:hover::before { opacity:1; }
+.acard-icon { font-size:30px; margin-bottom:12px; display:block; }
+.acard h4 { font-family:'Cinzel',serif; font-size:15px; font-weight:600; color:var(--white-soft); letter-spacing:1px; margin-bottom:8px; }
+.acard p { font-size:13px; color:var(--white-muted); line-height:1.65; }
+
+/* TICKER */
+.ticker {
+  padding:26px 0; overflow:hidden;
+  background:linear-gradient(90deg,var(--blue-navy),var(--blue-primary),var(--blue-navy));
+  border-top:1px solid rgba(100,181,246,0.18); border-bottom:1px solid rgba(100,181,246,0.18);
+}
+.ticker-track { display:flex; gap:52px; animation:tickerGo 28s linear infinite; white-space:nowrap; }
+.ticker-track span { font-family:'Cinzel',serif; font-size:12px; letter-spacing:4px; color:rgba(255,255,255,0.32); flex-shrink:0; }
+.ticker-track .hi { color:rgba(255,255,255,0.82); }
+.ticker-track .dot { color:var(--green-accent); font-size:14px; }
+@keyframes tickerGo { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* STAFF */
+.staff { padding:120px 0; background:var(--blue-deep); }
+.staff-groups { display:flex; flex-direction:column; gap:68px; }
+.sg-header { display:flex; align-items:center; gap:20px; margin-bottom:28px; }
+.sg-line { flex:1; height:1px; background:linear-gradient(to right,var(--border-glow),transparent); }
+.sg-line.rev { background:linear-gradient(to left,var(--border-glow),transparent); }
+.sg-title {
+  font-family:'Cinzel',serif; font-size:12px; font-weight:600;
+  letter-spacing:5px; text-transform:uppercase;
+  padding:8px 22px; border-radius:20px; white-space:nowrap;
+}
+.gf .sg-title { color:var(--white-pure); border:1px solid rgba(255,255,255,0.22); background:rgba(255,255,255,0.04); text-shadow:0 0 18px rgba(255,255,255,0.3); }
+.ga .sg-title { color:var(--blue-light); border:1px solid rgba(100,181,246,0.28); background:rgba(100,181,246,0.05); }
+.gm .sg-title { color:var(--green-accent); border:1px solid rgba(0,230,118,0.28); background:rgba(0,230,118,0.04); }
+.scards { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:18px; }
+.scard {
+  background:var(--glass-bg); border:1px solid var(--border-glow);
+  border-radius:16px; overflow:hidden;
+  backdrop-filter:blur(16px); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); position:relative;
+}
+.scard:hover {
+  transform:translateY(-6px);
+  border-color:var(--ca, rgba(100,181,246,0.5));
+  box-shadow:0 22px 52px rgba(0,0,0,0.52),0 0 0 1px var(--ca,rgba(100,181,246,0.12));
+}
+.scard-top {
+  padding:26px 26px 18px; display:flex; align-items:center; gap:16px;
+  border-bottom:1px solid var(--border-glow); position:relative;
+  background:linear-gradient(135deg,rgba(255,255,255,0.02),transparent);
+}
+.scard-ico {
+  width:54px; height:54px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px; flex-shrink:0;
+  background:var(--cb,rgba(100,181,246,0.1));
+  border:1px solid var(--ca,rgba(100,181,246,0.22));
+}
+.scard-name { font-family:'Cinzel',serif; font-size:17px; font-weight:700; color:var(--ca,var(--blue-light)); letter-spacing:1px; line-height:1.2; }
+.scard-sub { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--white-muted); margin-top:3px; }
+.scard-lvl { position:absolute; top:18px; right:22px; font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--ca,var(--blue-light)); opacity:0.4; letter-spacing:1px; }
+.scard-body { padding:18px 26px 24px; }
+.scard-body p { font-size:14px; color:var(--white-muted); line-height:1.75; margin-bottom:16px; }
+.scard-tags { display:flex; flex-wrap:wrap; gap:7px; }
+.scard-tags span {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:1.5px;
+  color:var(--ca,var(--blue-light)); border:1px solid var(--ca,rgba(100,181,246,0.28));
+  padding:3px 11px; border-radius:20px; background:rgba(0,0,0,0.18); text-transform:uppercase;
+}
+
+/* JOIN */
+.join {
+  padding:140px 0; text-align:center;
+  background:linear-gradient(180deg,var(--blue-deep),var(--blue-dark) 50%,var(--blue-deep));
+  position:relative; overflow:hidden;
+}
+.join-glow {
+  position:absolute; width:900px; height:500px; border-radius:50%;
+  background:radial-gradient(ellipse,rgba(21,101,192,0.11) 0%,transparent 70%);
+  top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none;
+}
+.join-content { position:relative; z-index:1; }
+.join-title {
+  font-family:'Cinzel',serif;
+  font-size:clamp(50px,8.5vw,115px);
+  font-weight:900; color:var(--white-pure); letter-spacing:4px; line-height:1;
+  margin-bottom:20px; text-shadow:0 0 60px rgba(100,181,246,0.25);
+}
+.join-title em { font-style:normal; color:var(--blue-light); }
+.join-sub { font-size:17px; font-weight:300; color:var(--white-muted); max-width:460px; margin:0 auto 52px; line-height:1.75; }
+.join-btns { display:flex; gap:18px; justify-content:center; flex-wrap:wrap; }
+
+/* FOOTER */
+footer { background:#010810; border-top:1px solid var(--border-glow); padding:64px 0 30px; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:60px; margin-bottom:48px; }
+.footer-logo { font-family:'Cinzel',serif; font-size:26px; font-weight:700; color:var(--white-pure); letter-spacing:4px; margin-bottom:8px; text-shadow:0 0 20px rgba(100,181,246,0.35); }
+.footer-logo em { font-style:normal; color:var(--blue-light); }
+.footer-tag { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--white-muted); margin-bottom:18px; }
+.footer-desc { font-size:14px; color:var(--white-muted); line-height:1.7; max-width:260px; }
+.fcol h5 { font-family:'Cinzel',serif; font-size:12px; font-weight:600; letter-spacing:4px; color:var(--blue-light); margin-bottom:18px; text-transform:uppercase; }
+.fcol a { display:block; color:var(--white-muted); text-decoration:none; font-size:14px; margin-bottom:11px; transition:color 0.2s; }
+.fcol a:hover { color:var(--white-pure); }
+.footer-bot { border-top:1px solid var(--border-glow); padding-top:22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+.footer-bot p { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; color:rgba(176,205,232,0.35); }
+.f-status { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--green-accent); }
+.status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-accent); box-shadow:0 0 8px var(--green-accent); animation:livePulse 1.6s ease-in-out infinite; }
+
+/* REVEAL */
+.reveal { opacity:0; transform:translateY(26px); transition:opacity 0.75s ease,transform 0.75s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* MOBILE */
+@media(max-width:800px){
+  nav{padding:0 22px;}
+  .nav-links{display:none;}
+  .container{padding:0 22px;}
+  .about-wrap{grid-template-columns:1fr;gap:40px;}
+  .acards{grid-template-columns:1fr;}
+  .hero-stats{flex-direction:column;}
+  .hstat{border-right:none;border-bottom:1px solid var(--border-glow);padding:22px 32px;}
+  .hstat:last-child{border-bottom:none;}
+  .footer-grid{grid-template-columns:1fr;gap:30px;}
+  .scards{grid-template-columns:1fr;}
+  .hero-btns{flex-direction:column;align-items:center;}
+}
 </style>
 </head>
 <body>
+<canvas id="particles"></canvas>
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">CREMONA <span>RP</span></div>
+  <div class="nav-logo">CREMONA <em>RP</em></div>
   <ul class="nav-links">
     <li><a href="#about">Chi Siamo</a></li>
     <li><a href="#staff">Staff</a></li>
     <li><a href="#join">Unisciti</a></li>
   </ul>
-  <span class="nav-badge">● LIVE</span>
+  <div class="nav-live"><div class="live-dot"></div>LIVE</div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-content">
-    <div class="hero-badge">EMERGENCY HAMBURG — ROBLOX ROLEPLAY</div>
-    <h1 class="hero-title">
-      <span class="line-gold">CREMONA</span>
-      <span class="line-white">ROLEPLAY</span>
-    </h1>
-    <p class="hero-sub">// REALISMO · EMERGENZA · COMUNITÀ //</p>
-    <div class="hero-buttons">
-      <a href="https://www.roblox.com/games/start?placeId=7711635737&launchData=joinCode%3Dg5wenniz" target="_blank" class="btn btn-primary">
-        <span>🎮 Entra nel Server</span>
-      </a>
-      <a href="https://discord.gg/54TQABKMyp" target="_blank" class="btn btn-discord">
-        <span>💬 Discord</span>
-      </a>
-    </div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="hero-eyebrow">Emergency Hamburg &nbsp;·&nbsp; Roblox Roleplay</div>
+  <h1 class="hero-title">
+    <span class="t1">CREMONA</span>
+    <span class="t2">ROLEPLAY</span>
+  </h1>
+  <p class="hero-sub"><span>Realismo</span> &nbsp;·&nbsp; Emergenza &nbsp;·&nbsp; <span>Comunità</span></p>
+  <div class="hero-btns">
+    <a href="https://www.roblox.com/games/start?placeId=7711635737&launchData=joinCode%3Dg5wenniz" target="_blank" class="btn btn-glow">🎮 Entra nel Server</a>
+    <a href="https://discord.gg/54TQABKMyp" target="_blank" class="btn btn-discord">💬 Discord</a>
   </div>
-
   <div class="hero-stats">
-    <div class="stat">
-      <span class="stat-number">24/7</span>
-      <span class="stat-label">Server Attivo</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat">
-      <span class="stat-number">100%</span>
-      <span class="stat-label">Realistico</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat">
-      <span class="stat-number">ITA</span>
-      <span class="stat-label">Comunità</span>
-    </div>
+    <div class="hstat"><span class="hstat-n">24/7</span><span class="hstat-l">Server Attivo</span></div>
+    <div class="hstat"><span class="hstat-n">100%</span><span class="hstat-l">Realistico</span></div>
+    <div class="hstat"><span class="hstat-n">ITA</span><span class="hstat-l">Comunità</span></div>
   </div>
-
-  <div class="scroll-indicator">
-    <span>SCORRI</span>
-    <div class="scroll-line"></div>
-  </div>
+  <div class="hero-scroll"><span>Scorri</span><div class="scroll-arr"></div></div>
 </section>
 
 <!-- CHI SIAMO -->
 <section class="about" id="about">
   <div class="container">
-    <div class="about-grid">
-      <div class="about-text fade-in">
-        <div class="section-label">// IDENTITÀ //</div>
-        <h2 class="section-title">CHI <span>SIAMO</span></h2>
-        <div class="section-line"></div>
-        <p>
-          <strong>Cremona Roleplay</strong> è una comunità italiana nata con un obiettivo preciso: offrire un'esperienza di gioco di ruolo <strong>seria, immersiva e realistica</strong> all'interno del server Roblox Emergency Hamburg.
-        </p>
-        <p>
-          Crediamo nel roleplay di qualità. Ogni sessione è strutturata per simulare scenari di emergenza realistici — dalla gestione delle chiamate, agli interventi sul campo, fino alla comunicazione radio coordinata tra reparti.
-        </p>
-        <p>
-          Non siamo un server qualunque. Siamo una <strong>squadra di appassionati</strong> che rispetta le procedure, valorizza la formazione e punta all'eccellenza. Se cerchi caos, non fare qui. Se cerchi qualcosa di vero, benvenuto.
-        </p>
+    <div class="about-wrap">
+      <div class="reveal">
+        <div class="sec-label">// Identità //</div>
+        <h2 class="sec-title">Chi <em>Siamo</em></h2>
+        <div class="sec-div"></div>
+        <p><strong>Cremona Roleplay</strong> è una comunità italiana nata con un obiettivo preciso: offrire un'esperienza di gioco di ruolo <strong>seria, immersiva e realistica</strong> all'interno del server Roblox Emergency Hamburg.</p>
+        <p>Crediamo nel roleplay di qualità. Ogni sessione simula scenari di emergenza realistici — dalla gestione delle chiamate, agli interventi sul campo, alla comunicazione radio coordinata tra reparti.</p>
+        <p>Non siamo un server qualunque. Siamo una <strong>squadra di appassionati</strong> che rispetta le procedure, valorizza la formazione e punta all'eccellenza.</p>
       </div>
-      <div class="about-cards fade-in">
-        <div class="info-card">
-          <span class="info-card-icon">🚨</span>
-          <h4>Emergenze Reali</h4>
-          <p>Scenari autentici basati su protocolli di emergenza reali. Nessuna improvvisazione.</p>
-        </div>
-        <div class="info-card">
-          <span class="info-card-icon">📻</span>
-          <h4>Radio Coordinata</h4>
-          <p>Comunicazioni strutturate tra reparti con codici e procedure standardizzate.</p>
-        </div>
-        <div class="info-card">
-          <span class="info-card-icon">🎖️</span>
-          <h4>Gerarchia Reale</h4>
-          <p>Struttura organizzativa con ruoli definiti, responsabilità chiare e avanzamenti meritocratici.</p>
-        </div>
-        <div class="info-card">
-          <span class="info-card-icon">🇮🇹</span>
-          <h4>Comunità ITA</h4>
-          <p>Server completamente italiano, per chi vuole giocare nella propria lingua con serietà.</p>
-        </div>
+      <div class="acards reveal">
+        <div class="acard"><span class="acard-icon">🚨</span><h4>Emergenze Reali</h4><p>Scenari autentici basati su protocolli di emergenza reali. Nessuna improvvisazione.</p></div>
+        <div class="acard"><span class="acard-icon">📻</span><h4>Radio Coordinata</h4><p>Comunicazioni strutturate tra reparti con codici e procedure standardizzate.</p></div>
+        <div class="acard"><span class="acard-icon">🎖️</span><h4>Gerarchia Reale</h4><p>Ruoli definiti, responsabilità chiare e avanzamenti meritocratici.</p></div>
+        <div class="acard"><span class="acard-icon">🇮🇹</span><h4>Comunità ITA</h4><p>Server completamente italiano, per chi vuole giocare con serietà.</p></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- TICKER -->
-<div class="divider-section">
-  <div class="divider-ticker">
-    <span class="accent">CREMONA ROLEPLAY</span>
-    <span>·</span>
-    <span>EMERGENCY HAMBURG</span>
-    <span>·</span>
-    <span class="accent">ROBLOX</span>
-    <span>·</span>
-    <span>COMUNITÀ ITALIANA</span>
-    <span>·</span>
-    <span class="accent">ROLEPLAY REALISTICO</span>
-    <span>·</span>
-    <span>24/7 ATTIVO</span>
-    <span>·</span>
-    <span class="accent">CREMONA ROLEPLAY</span>
-    <span>·</span>
-    <span>EMERGENCY HAMBURG</span>
-    <span>·</span>
-    <span class="accent">ROBLOX</span>
-    <span>·</span>
-    <span>COMUNITÀ ITALIANA</span>
-    <span>·</span>
-    <span class="accent">ROLEPLAY REALISTICO</span>
-    <span>·</span>
-    <span>24/7 ATTIVO</span>
-    <span>·</span>
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="hi">Cremona Roleplay</span><span class="dot">◆</span>
+    <span>Emergency Hamburg</span><span class="dot">◆</span>
+    <span class="hi">Roblox</span><span class="dot">◆</span>
+    <span>Comunità Italiana</span><span class="dot">◆</span>
+    <span class="hi">Roleplay Realistico</span><span class="dot">◆</span>
+    <span>24/7 Attivo</span><span class="dot">◆</span>
+    <span class="hi">Cremona Roleplay</span><span class="dot">◆</span>
+    <span>Emergency Hamburg</span><span class="dot">◆</span>
+    <span class="hi">Roblox</span><span class="dot">◆</span>
+    <span>Comunità Italiana</span><span class="dot">◆</span>
+    <span class="hi">Roleplay Realistico</span><span class="dot">◆</span>
+    <span>24/7 Attivo</span><span class="dot">◆</span>
   </div>
 </div>
 
 <!-- STAFF -->
 <section class="staff" id="staff">
   <div class="container">
-    <div class="fade-in">
-      <div class="section-label">// GERARCHIA //</div>
-      <h2 class="section-title">RUOLI <span>STAFF</span></h2>
-      <div class="section-line"></div>
+    <div class="reveal">
+      <div class="sec-label">// Gerarchia //</div>
+      <h2 class="sec-title">Ruoli <em>Staff</em></h2>
+      <div class="sec-div"></div>
     </div>
+    <div class="staff-groups">
 
-    <div class="staff-grid">
-
-      <!-- FONDATORE -->
-      <div class="staff-card fade-in" style="--card-accent: #f0a500; --card-bg: rgba(240,165,0,0.1);">
-        <div class="staff-rank">LVL-01</div>
-        <div class="staff-card-header">
-          <div class="staff-icon">👑</div>
-          <div>
-            <div class="staff-card-title">FONDATORE</div>
-            <div class="staff-card-subtitle">FOUNDER · OWNER</div>
-          </div>
+      <!-- FONDAZIONE -->
+      <div class="staff-group gf reveal">
+        <div class="sg-header">
+          <div class="sg-line"></div>
+          <div class="sg-title">👑 Fondazione</div>
+          <div class="sg-line rev"></div>
         </div>
-        <div class="staff-card-body">
-          <p>Il creatore e proprietario assoluto del server. Decide la direzione del progetto, approva le modifiche strutturali e ha autorità totale su ogni aspetto della comunità.</p>
-          <ul class="staff-perks">
-            <li>AUTORITA' ASSOLUTA</li>
-            <li>GESTIONE TOTALE</li>
-            <li>FONDAZIONE</li>
-          </ul>
+        <div class="scards">
+          <div class="scard" style="--ca:#f0f6ff;--cb:rgba(240,246,255,0.07)">
+            <div class="scard-top">
+              <div class="scard-lvl">LVL-01</div>
+              <div class="scard-ico">👑</div>
+              <div><div class="scard-name">Fondatore</div><div class="scard-sub">Founder · Owner</div></div>
+            </div>
+            <div class="scard-body">
+              <p>Il creatore e proprietario assoluto del server. Decide la direzione del progetto e ha autorità totale su ogni aspetto della comunità.</p>
+              <div class="scard-tags"><span>Autorità Assoluta</span><span>Gestione Totale</span><span>Fondazione</span></div>
+            </div>
+          </div>
+          <div class="scard" style="--ca:#90caf9;--cb:rgba(144,202,249,0.08)">
+            <div class="scard-top">
+              <div class="scard-lvl">LVL-02</div>
+              <div class="scard-ico">🛡️</div>
+              <div><div class="scard-name">Co-Fondatore</div><div class="scard-sub">Co-Founder · Co-Owner</div></div>
+            </div>
+            <div class="scard-body">
+              <p>Braccio destro del Fondatore. Gestisce le operazioni quotidiane e supervisiona lo staff in assenza del Fondatore.</p>
+              <div class="scard-tags"><span>Supervisione</span><span>Gestione Staff</span><span>Decisioni Operative</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- CO-FONDATORE -->
-      <div class="staff-card fade-in" style="--card-accent: #e67e22; --card-bg: rgba(230,126,34,0.1);">
-        <div class="staff-rank">LVL-02</div>
-        <div class="staff-card-header">
-          <div class="staff-icon">🛡️</div>
-          <div>
-            <div class="staff-card-title">CO-FONDATORE</div>
-            <div class="staff-card-subtitle">CO-FOUNDER · CO-OWNER</div>
-          </div>
+      <!-- AMMINISTRAZIONE -->
+      <div class="staff-group ga reveal">
+        <div class="sg-header">
+          <div class="sg-line"></div>
+          <div class="sg-title">⚙️ Amministrazione</div>
+          <div class="sg-line rev"></div>
         </div>
-        <div class="staff-card-body">
-          <p>Braccio destro del Fondatore. Gestisce le operazioni quotidiane del server, supervisiona lo staff e prende decisioni in assenza del Fondatore.</p>
-          <ul class="staff-perks">
-            <li>SUPERVISIONE</li>
-            <li>GESTIONE STAFF</li>
-            <li>DECISIONI OPERATIVE</li>
-          </ul>
+        <div class="scards">
+          <div class="scard" style="--ca:#4fc3f7;--cb:rgba(79,195,247,0.08)">
+            <div class="scard-top">
+              <div class="scard-lvl">LVL-03</div>
+              <div class="scard-ico">🎯</div>
+              <div><div class="scard-name">Direttore</div><div class="scard-sub">Director</div></div>
+            </div>
+            <div class="scard-body">
+              <p>Supervisiona uno o più settori del server. Coordina i responsabili di reparto e mantiene gli standard di qualità.</p>
+              <div class="scard-tags"><span>Supervisione</span><span>Qualità</span><span>Coordinamento</span></div>
+            </div>
+          </div>
+          <div class="scard" style="--ca:#29b6f6;--cb:rgba(41,182,246,0.08)">
+            <div class="scard-top">
+              <div class="scard-lvl">LVL-04</div>
+              <div class="scard-ico">📋</div>
+              <div><div class="scard-name">Responsabile</div><div class="scard-sub">Department Head</div></div>
+            </div>
+            <div class="scard-body">
+              <p>Gestisce un reparto specifico. Recluta, forma il personale e organizza le sessioni di gioco.</p>
+              <div class="scard-tags"><span>Reparto</span><span>Reclutamento</span><span>Formazione</span></div>
+            </div>
+          </div>
+          <div class="scard" style="--ca:#1e88e5;--cb:rgba(30,136,229,0.1)">
+            <div class="scard-top">
+              <div class="scard-lvl">LVL-05</div>
+              <div class="scard-ico">🔧</div>
+              <div><div class="scard-name">Amministratore</div><div class="scard-sub">Administrator</div></div>
+            </div>
+            <div class="scard-body">
+              <p>Gestione tecnica e disciplinare. Applica i regolamenti, gestisce ban/mute e mantiene l'ordine nella comunità.</p>
+              <div class="scard-tags"><span>Disciplinare</span><span>Ban / Mute</span><span>Ordine</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- DIRETTORE -->
-      <div class="staff-card fade-in" style="--card-accent: #c0392b; --card-bg: rgba(192,57,43,0.1);">
-        <div class="staff-rank">LVL-03</div>
-        <div class="staff-card-header">
-          <div class="staff-icon">🎯</div>
-          <div>
-            <div class="staff-card-title">DIRETTORE</div>
-            <div class="staff-card-subtitle">DIRECTOR</div>
+      <!-- MODERATORI -->
+      <div class="staff-group gm reveal">
+        <div class="sg-header">
+          <div class="sg-line"></div>
+          <div class="sg-title">🟢 Moderatori</div>
+          <div class="sg-line rev"></div>
+        </div>
+        <div class="scards">
+          <div class="scard" style="--ca:#00e676;--cb:rgba(0,230,118,0.07)">
+            <div class="scard-top">
+              <div class="scard-lvl">LVL-06</div>
+              <div class="scard-ico">⭐</div>
+              <div><div class="scard-name">Mod. Senior</div><div class="scard-sub">Senior Moderator</div></div>
+            </div>
+            <div class="scard-body">
+              <p>Moderatore esperto. Gestisce casi complessi, fa mentoring ai junior e può assumere responsabilità amministrative temporanee.</p>
+              <div class="scard-tags"><span>Casi Complessi</span><span>Mentoring</span><span>Esperienza</span></div>
+            </div>
           </div>
-        </div>
-        <div class="staff-card-body">
-          <p>Supervisiona uno o più settori specifici del server (es. forze dell'ordine, emergenze mediche). Coordina i responsabili di reparto e mantiene gli standard di qualità.</p>
-          <ul class="staff-perks">
-            <li>SUPERVISIONE REPARTI</li>
-            <li>STANDARD DI QUALITÀ</li>
-            <li>COORDINAMENTO</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- RESPONSABILE -->
-      <div class="staff-card fade-in" style="--card-accent: #1a6fa8; --card-bg: rgba(26,111,168,0.1);">
-        <div class="staff-rank">LVL-04</div>
-        <div class="staff-card-header">
-          <div class="staff-icon">📋</div>
-          <div>
-            <div class="staff-card-title">RESPONSABILE</div>
-            <div class="staff-card-subtitle">DEPARTMENT HEAD</div>
+          <div class="scard" style="--ca:#69f0ae;--cb:rgba(105,240,174,0.06)">
+            <div class="scard-top">
+              <div class="scard-lvl">LVL-07</div>
+              <div class="scard-ico">🟢</div>
+              <div><div class="scard-name">Moderatore</div><div class="scard-sub">Moderator</div></div>
+            </div>
+            <div class="scard-body">
+              <p>Prima linea di moderazione. Monitora i canali, risponde ai report e garantisce il rispetto del regolamento.</p>
+              <div class="scard-tags"><span>Monitoraggio</span><span>Avvertimenti</span><span>Report</span></div>
+            </div>
           </div>
-        </div>
-        <div class="staff-card-body">
-          <p>Gestisce un reparto specifico. Recluta e forma il personale, organizza le sessioni di gioco, redige protocolli interni e riporta al Direttore di riferimento.</p>
-          <ul class="staff-perks">
-            <li>GESTIONE REPARTO</li>
-            <li>RECLUTAMENTO</li>
-            <li>FORMAZIONE</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- AMMINISTRATORE -->
-      <div class="staff-card fade-in" style="--card-accent: #8e44ad; --card-bg: rgba(142,68,173,0.1);">
-        <div class="staff-rank">LVL-05</div>
-        <div class="staff-card-header">
-          <div class="staff-icon">⚙️</div>
-          <div>
-            <div class="staff-card-title">AMMINISTRATORE</div>
-            <div class="staff-card-subtitle">ADMINISTRATOR</div>
+          <div class="scard" style="--ca:#b2dfdb;--cb:rgba(178,223,219,0.05)">
+            <div class="scard-top">
+              <div class="scard-lvl">LVL-08</div>
+              <div class="scard-ico">🤝</div>
+              <div><div class="scard-name">Helper</div><div class="scard-sub">Community Helper</div></div>
+            </div>
+            <div class="scard-body">
+              <p>Supporto alla comunità. Accoglie i nuovi membri, risponde alle domande e mantiene un ambiente positivo.</p>
+              <div class="scard-tags"><span>Accoglienza</span><span>Supporto</span><span>Segnalazioni</span></div>
+            </div>
           </div>
-        </div>
-        <div class="staff-card-body">
-          <p>Si occupa della gestione tecnica e disciplinare del server. Applica i regolamenti, gestisce i ban/mute, mantiene l'ordine nella comunità Discord e in-game.</p>
-          <ul class="staff-perks">
-            <li>GESTIONE DISCIPLINARE</li>
-            <li>BAN / MUTE</li>
-            <li>ORDINE COMUNITÀ</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- MODERATORE SENIOR -->
-      <div class="staff-card fade-in" style="--card-accent: #00d4ff; --card-bg: rgba(0,212,255,0.08);">
-        <div class="staff-rank">LVL-06</div>
-        <div class="staff-card-header">
-          <div class="staff-icon">🔵</div>
-          <div>
-            <div class="staff-card-title">MOD. SENIOR</div>
-            <div class="staff-card-subtitle">SENIOR MODERATOR</div>
-          </div>
-        </div>
-        <div class="staff-card-body">
-          <p>Moderatore esperto con esperienza consolidata. Gestisce i casi più complessi, fa da mentore ai moderatori junior e può assumere responsabilità amministrative temporanee.</p>
-          <ul class="staff-perks">
-            <li>CASI COMPLESSI</li>
-            <li>MENTORING</li>
-            <li>ESPERIENZA</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- MODERATORE -->
-      <div class="staff-card fade-in" style="--card-accent: #27ae60; --card-bg: rgba(39,174,96,0.08);">
-        <div class="staff-rank">LVL-07</div>
-        <div class="staff-card-header">
-          <div class="staff-icon">🟢</div>
-          <div>
-            <div class="staff-card-title">MODERATORE</div>
-            <div class="staff-card-subtitle">MODERATOR</div>
-          </div>
-        </div>
-        <div class="staff-card-body">
-          <p>Prima linea di moderazione. Monitora i canali, risponde ai report degli utenti, emette avvertimenti, gestisce i conflitti minori e garantisce il rispetto del regolamento.</p>
-          <ul class="staff-perks">
-            <li>MONITORAGGIO</li>
-            <li>AVVERTIMENTI</li>
-            <li>REPORT UTENTI</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- HELPER -->
-      <div class="staff-card fade-in" style="--card-accent: #7f8c8d; --card-bg: rgba(127,140,141,0.08);">
-        <div class="staff-rank">LVL-08</div>
-        <div class="staff-card-header">
-          <div class="staff-icon">🤝</div>
-          <div>
-            <div class="staff-card-title">HELPER</div>
-            <div class="staff-card-subtitle">COMMUNITY HELPER</div>
-          </div>
-        </div>
-        <div class="staff-card-body">
-          <p>Supporto alla comunità. Accoglie i nuovi membri, risponde alle domande, segnala problemi ai moderatori e contribuisce a mantenere un ambiente positivo e accogliente.</p>
-          <ul class="staff-perks">
-            <li>ACCOGLIENZA</li>
-            <li>SUPPORTO</li>
-            <li>SEGNALAZIONI</li>
-          </ul>
         </div>
       </div>
 
@@ -1069,19 +566,18 @@
   </div>
 </section>
 
-<!-- CTA JOIN -->
-<section class="cta-section" id="join">
-  <div class="cta-content fade-in">
-    <div class="section-label" style="margin-bottom:16px;">// UNISCITI A NOI //</div>
-    <h2>PRONTO A <span style="color:var(--accent-gold)">ENTRARE?</span></h2>
-    <p>Unisciti alla comunità Cremona Roleplay. Entra nel Discord, leggi il regolamento e inizia a fare roleplay sul server Emergency Hamburg.</p>
-    <div class="cta-buttons">
-      <a href="https://discord.gg/54TQABKMyp" target="_blank" class="btn btn-discord">
-        <span>💬 Entra nel Discord</span>
-      </a>
-      <a href="https://www.roblox.com/games/start?placeId=7711635737&launchData=joinCode%3Dg5wenniz" target="_blank" class="btn btn-primary">
-        <span>🎮 Gioca su Roblox</span>
-      </a>
+<!-- JOIN -->
+<section class="join" id="join">
+  <div class="join-glow"></div>
+  <div class="container">
+    <div class="join-content reveal">
+      <div class="sec-label">// Unisciti a Noi //</div>
+      <h2 class="join-title">Pronto a<br><em>Entrare?</em></h2>
+      <p class="join-sub">Unisciti alla comunità Cremona Roleplay. Entra nel Discord, leggi il regolamento e inizia a giocare su Emergency Hamburg.</p>
+      <div class="join-btns">
+        <a href="https://discord.gg/54TQABKMyp" target="_blank" class="btn btn-discord">💬 Entra nel Discord</a>
+        <a href="https://www.roblox.com/games/start?placeId=7711635737&launchData=joinCode%3Dg5wenniz" target="_blank" class="btn btn-glow">🎮 Gioca su Roblox</a>
+      </div>
     </div>
   </div>
 </section>
@@ -1089,62 +585,85 @@
 <!-- FOOTER -->
 <footer>
   <div class="container">
-    <div class="footer-inner">
+    <div class="footer-grid">
       <div>
-        <div class="footer-logo">CREMONA <span>RP</span></div>
-        <div class="footer-tagline">// EMERGENCY HAMBURG · ROBLOX //</div>
+        <div class="footer-logo">CREMONA <em>RP</em></div>
+        <div class="footer-tag">Emergency Hamburg · Roblox</div>
+        <p class="footer-desc">La comunità italiana di roleplay realistico su Roblox Emergency Hamburg.</p>
       </div>
-      <div class="footer-links">
-        <h5>LINK RAPIDI</h5>
+      <div class="fcol">
+        <h5>Navigazione</h5>
         <a href="#about">Chi Siamo</a>
         <a href="#staff">Staff</a>
         <a href="#join">Unisciti</a>
       </div>
-      <div class="footer-links">
-        <h5>COMMUNITY</h5>
+      <div class="fcol">
+        <h5>Community</h5>
         <a href="https://discord.gg/54TQABKMyp" target="_blank">Discord Server</a>
         <a href="https://www.roblox.com/games/start?placeId=7711635737&launchData=joinCode%3Dg5wenniz" target="_blank">Emergency Hamburg</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>© 2025 CREMONA ROLEPLAY · TUTTI I DIRITTI RISERVATI</p>
-      <div class="status">
-        <div class="status-dot"></div>
-        SERVER ONLINE
-      </div>
+    <div class="footer-bot">
+      <p>© 2025 Cremona Roleplay · Tutti i diritti riservati</p>
+      <div class="f-status"><div class="status-dot"></div>Server Online</div>
     </div>
   </div>
 </footer>
 
 <script>
-  // Fade in on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.classList.add('visible');
-        }, entry.target.dataset.delay || 0);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
+// PARTICLES
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
 
-  document.querySelectorAll('.fade-in').forEach((el, i) => {
-    el.dataset.delay = (i % 4) * 100;
-    observer.observe(el);
-  });
+class P {
+  constructor(){ this.reset(true); }
+  reset(rand){
+    this.x = Math.random() * canvas.width;
+    this.y = rand ? Math.random() * canvas.height : canvas.height + 5;
+    this.r = Math.random() * 1.4 + 0.3;
+    this.vx = (Math.random() - 0.5) * 0.25;
+    this.vy = -Math.random() * 0.35 - 0.08;
+    this.o = Math.random() * 0.45 + 0.08;
+    this.life = 0; this.max = Math.random() * 320 + 180;
+    const t = Math.random();
+    if(t > 0.65) this.c = `rgba(100,181,246,${this.o})`;
+    else if(t > 0.3) this.c = `rgba(232,244,253,${this.o*0.35})`;
+    else this.c = `rgba(0,230,118,${this.o*0.25})`;
+  }
+  step(){
+    this.x += this.vx; this.y += this.vy; this.life++;
+    if(this.life > this.max || this.y < -5) this.reset(false);
+  }
+  draw(){
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle = this.c; ctx.fill();
+  }
+}
+const ps = Array.from({length:110},()=>new P());
+(function loop(){ ctx.clearRect(0,0,canvas.width,canvas.height); ps.forEach(p=>{p.step();p.draw();}); requestAnimationFrame(loop); })();
 
-  // Smooth active nav links
-  const sections = document.querySelectorAll('section[id]');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 100) current = s.id;
-    });
-    document.querySelectorAll('.nav-links a').forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent-cyan)' : '';
-    });
+// REVEAL
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('visible'), e.target.dataset.d||0);
+      obs.unobserve(e.target);
+    }
   });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach((el,i)=>{ el.dataset.d=(i%4)*110; obs.observe(el); });
+
+// ACTIVE NAV
+const secs = document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{ if(window.scrollY >= s.offsetTop-130) cur=s.id; });
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    a.style.color = a.getAttribute('href')==='#'+cur ? 'var(--white-pure)' : '';
+  });
+});
 </script>
 </body>
 </html>
